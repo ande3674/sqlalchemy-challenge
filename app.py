@@ -37,5 +37,25 @@ def precipitation():
     return jsonify(prcp_dict)
 
 
+@app.route("/api/v1.0/stations")
+def stations():
+    # Return a JSON list of stations from the dataset.
+    session_rows = session.query(Station).all()
+    return_string = "All Stations: <br>"
+    for row in session_rows:
+        return_string += f"{row.name} <br>"
+    return return_string
+
+
+@app.route("/api/v1.0/tobs")
+def tobs():
+    # Query the dates and temperature observations of the most active station for the last year of data.
+
+    # Return a JSON list of temperature observations (TOBS) for the previous year.
+
+    return ""
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)
