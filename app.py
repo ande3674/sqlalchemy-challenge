@@ -16,6 +16,7 @@ session = Session(engine)
 # Start Flask app
 app = Flask(__name__)
 
+
 @app.route("/")
 def home():
     return render_template('index.html')
@@ -26,7 +27,7 @@ def precipitation():
     # Query precipitation
     last_year_rows = session.query(Measurement.prcp, Measurement.date).filter(Measurement.date >= '2016-08-23') \
                             .order_by(Measurement.date.asc()).all()
-                            
+
     #Convert the query results to a dictionary using date as the key and prcp as the value.
     prcp_dict = {}
     for row in last_year_rows:
@@ -34,6 +35,7 @@ def precipitation():
 
     #Return the JSON representation of your dictionary.
     return jsonify(prcp_dict)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
