@@ -50,10 +50,50 @@ def stations():
 @app.route("/api/v1.0/tobs")
 def tobs():
     # Query the dates and temperature observations of the most active station for the last year of data.
+    last_year_tobs_rows = session.query(Measurement.tobs, Measurement.date).filter(Measurement.date >= '2016-08-23') \
+                            .order_by(Measurement.date.asc()).all()
+
+    tobs_dict = {}
+
+    for row in last_year_tobs_rows:
+        tobs_dict[row.date] = row.tobs
 
     # Return a JSON list of temperature observations (TOBS) for the previous year.
+    return jsonify(tobs_dict)
 
-    return ""
+
+@app.route("/api/v1.0/<start>")
+def start_only(start):
+    lowest_temp = session.query(func.min(Measurement.tobs)) \
+                        .filter(Measurement.station == 'USC00519281').filter(Measurement.date >= start).all()
+    highest_temp = session.query(func.max(Measurement.tobs)) \
+                        .filter(Measurement.station == 'USC00519281').filter(Measurement.date >= start).all()
+    avg_temp = session.query(func.avg(Measurement.tobs)) \
+                        .filter(Measurement.station == 'USC00519281').filter(Measurement.date >= start).all()
+
+    # calculate TMIN, TAVG, and TMAX for all dates greater than and equal to the start date.
+    results_dict = {"Minimum Temp": lowest_temp, "Maximum Temp": highest_temp, "Average Temp": avg_temp}
+
+    # Return a JSON list of the minimum temperature, the average temperature, and the max 
+    # temperature for the given start range.
+    return jsonify(results_dict)
+
+
+@app.route("/api/v1.0/<start>/<end>")
+def start_and_end(start, end):
+    lowest_temp = session.query(func.min(Measurement.tobs)).filter(Measurement.station == 'USC00519281') \
+                        .filter(Measurement.date >= start).filter(Measurement.date <= end).all()
+    highest_temp = session.query(func.max(Measurement.tobs)).filter(Measurement.station == 'USC00519281') \
+                        .filter(Measurement.date >= start).filter(Measurement.date <= end).all()
+    avg_temp = session.query(func.avg(Measurement.tobs)).filter(Measurement.station == 'USC00519281') \
+                        .filter(Measurement.date >= start).filter(Measurement.date <= end).all()
+
+    # calculate TMIN, TAVG, and TMAX for all dates greater than and equal to the start date.
+    results_dict = {"Minimum Temp": lowest_temp, "Maximum Temp": highest_temp, "Average Temp": avg_temp}
+
+    # Return a JSON list of the minimum temperature, the average temperature, and the max 
+    # temperature for the given start range.
+    return jsonify(results_dict)
 
 
 
