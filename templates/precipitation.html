@@ -16,15 +16,15 @@
 </div> -->
 <body>
     <div class="head">
-        <h1>Available Routes</h1>
+        <h1>Data:</h1>
     </div>
     
     <div class="stuff">
-        <a class="active" href="/api/v1.0/precipitation">Precipitation</a><br>
-        <a class="active" href="/api/v1.0/stations">Stations</a><br>
-        <a class="active" href="/api/v1.0/tobs">Temperature</a><br>
-        <a class="active" href="/api/v1.0/<start>">Start</a><br>
-        <a class="active" href="/api/v1.0/&lt;start&gt;/&lt;end&gt;">Start-End</a>
+        {% for d in data %}
+            <div class="data">
+                <p>Precipitation: {{d.prcp}} on {{ d.date }}</p>
+            </div>
+        {% endfor %}
     </div>
 
 </body>
